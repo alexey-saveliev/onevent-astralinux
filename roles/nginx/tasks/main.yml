@@ -1,0 +1,24 @@
+# wget https://nginx.org/keys/nginx_signing.key
+# apt-key add ./nginx_signing.key
+# echo "deb http://nginx.org/packages/debian buster nginx" | sudo tee /etc/apt/sources.list.d/nginx.list
+# apt update
+# echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n"     | sudo tee /etc/apt/preferences.d/99nginx
+
+- name: Add NginX repository signing key
+  apt_key:
+    url: https://nginx.org/keys/nginx_signing.key
+    state: present
+- name: Add NginX repository
+  apt_repository:
+    repo: deb http://nginx.org/packages/debian stretch nginx
+    state: present
+    filename: nginx
+- name: Pin NginX to Debian repository
+  copy:
+    content: "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900"
+    dest: "/etc/apt/preferences.d/99nginx"
+- name: Install NginX
+  apt:
+    name: nginx=1.18*
+    state: present
+    update_cache: yes
