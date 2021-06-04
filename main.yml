@@ -1,0 +1,9 @@
+- name: Deploy proxy servers
+  hosts: Proxies
+  roles:
+    - nginx
+
+- name: Deploy WebServers
+  hosts: WebServers
+  roles:
+    - nodejs

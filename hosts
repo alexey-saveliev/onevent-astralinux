@@ -1,0 +1,13 @@
+all:
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  children:
+    Proxies:
+      hosts:
+        localhost:
+    WebServers:
+      hosts:
+        localhost:
+    dbservers:
+      hosts:
+        localhost:
