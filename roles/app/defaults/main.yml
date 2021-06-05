@@ -1,2 +1,8 @@
 ---
 app_path: "/var/www/rustv"
+dbhost: "localhost"
+dbname: "rustv"
+dbuser: "rustv"
+dbpassword: "ChangeMe!"
+server_name: "localhost"
+wowza_hostname: "localhost"

@@ -11,7 +11,7 @@
 - name: Install ffmpeg
   apt:
     name: ffmpeg
-    default_release: stretch
+    # default_release: stretch
     state: present
 
 - name: Create user for NodeJS application
@@ -19,3 +19,58 @@
     name: rustv
     shell: "/sbin/nologin"
     create_home: no
+
+- name: Clone application Git repository
+  git:
+    force: yes
+    repo: "https://github.com/radoneje/rustv.git"
+    dest: "{{ app_path }}"
+  register: app_repo
+  tags:
+    - deploy-app
+
+- name: Install dependencies
+  npm:
+    path: "{{ app_path }}"
+  when: app_repo.changed
+  tags:
+    - deploy-app
+
+- name: Deploy NodeJS app config for server {{ server_name }}
+  template:
+    src: "config.json.j2"
+    dest: "{{ app_path }}/config.json"
+  tags:
+    - deploy-app
+
+- name: Set NodeJS app directory owner
+  file:
+    dest: "{{ app_path }}"
+    owner: "rustv"
+    group: "rustv"
+    recurse: yes
+  tags:
+    - deploy-app
+
+- name: Deploy systemd startup script
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/systemd/system/{{ item }}"
+  loop:
+    - "encoder.service"
+    - "rustv.service"
+  register: systemd
+  tags:
+    - deploy-app
+
+- name: Start Node.JS applications
+  systemd:
+    daemon_reload: yes
+    enabled: yes
+    name: "{{ item }}"
+    state: restarted
+  loop:
+    - "encoder"
+    - "rustv"
+  tags:
+    - deploy-app

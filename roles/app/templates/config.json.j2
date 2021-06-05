@@ -1,0 +1,51 @@
+{
+  "serverName": "https://{{ server_name }}",
+  "localServerName": "http://localhost",
+  "port": 8080,
+  "encoderPort": 8081,
+   "encoderServer": "localhost",
+  "encodeFolder": "public/files",
+  "ffmpegPath": "/usr/local/bin/ffmpeg",
+  "pgConnection":  {
+      "host" : "{{ dbhost }}",
+      "user" : "{{ dbuser }}",
+      "password" : "{{ dbpassword }}",
+      "database" : "{{ dbname }}"
+      },
+  "sha256Secret": "dfczgegrby",
+  "constraints":
+  {
+    "video":{
+      "aspectRatio": 1.777777778,
+      "frameRate": {"max": 30},
+      "width": {"min": 320, "ideal": 320, "max": 1920},
+      "height": {"min": 400, "ideal": 1080},
+      "facingMode":  "user"},
+    "audio": {
+      "channelCount": 1,
+      "echoCancellation": true
+    }
+  },
+  "meetWowza": [
+    {
+      "url": "wss://{{ wowza_hostname }}/webrtc-session.json",
+      "applicationName": "webrtc"
+    }
+
+  ],
+  "meetBitrate": {
+     "video":360,
+     "audio" :64
+  },
+  "spkWowza": [
+    {
+      "url": "wss://{{ wowza_hostname }}/webrtc-session.json",
+      "applicationName": "webrtc"
+    }
+
+  ],
+  "spkBitrate": {
+    "video":640,
+    "audio" :98
+  }
+}

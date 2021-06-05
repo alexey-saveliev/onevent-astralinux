@@ -1,0 +1,16 @@
+[Unit]
+Description=rustv
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/node bin/www
+User=rustv
+Group=rustv
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
+WorkingDirectory={{ app_path }}
+Restart=always
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target
