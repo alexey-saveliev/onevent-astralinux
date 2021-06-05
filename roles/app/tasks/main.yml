@@ -1,0 +1,21 @@
+- name: Install ffmpeg repository keys
+  apt:
+    deb: http://www.deb-multimedia.org/pool/main/d/deb-multimedia-keyring/deb-multimedia-keyring_2016.8.1_all.deb
+    state: present
+- name: Add ffmpeg repository
+  apt_repository:
+    repo: deb http://www.deb-multimedia.org stretch main non-free
+    state: present
+    filename: ffmpeg
+
+- name: Install ffmpeg
+  apt:
+    name: ffmpeg
+    default_release: stretch
+    state: present
+
+- name: Create user for NodeJS application
+  user:
+    name: rustv
+    shell: "/sbin/nologin"
+    create_home: no

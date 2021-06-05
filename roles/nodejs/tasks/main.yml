@@ -7,10 +7,6 @@
     repo: deb https://deb.nodesource.com/node_{{ nodejs_version }} stretch main
     state: present
     filename: nodejs
-# - name: Pin NginX to Debian repository
-#   copy:
-#     content: "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900"
-#     dest: "/etc/apt/preferences.d/99nginx"
 - name: Install NodeJS
   apt:
     name: "nodejs={{ nodejs_version|regex_replace('x', '') }}*"

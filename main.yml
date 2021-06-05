@@ -1,12 +1,12 @@
+- name: Deploy WebServers
+  hosts: WebServers
+  roles:
+    - app
+
 - name: Deploy proxy servers
   hosts: Proxies
   roles:
     - nginx
-
-- name: Deploy WebServers
-  hosts: WebServers
-  roles:
-    - nodejs
 
 - name: Deploy presentation converter
   hosts: Converter
