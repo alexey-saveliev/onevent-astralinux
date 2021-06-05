@@ -22,3 +22,52 @@
     name: nginx=1.18*
     state: present
     update_cache: yes
+
+- name : Prepare Nginx cache
+  block:
+  - name: Create Nginx cache directory
+    file:
+      name: "/var/cache/nginx"
+      state: directory
+  - name: Mount {{ nginx_cache_size }} tmpfs device for Nginx cache
+    mount:
+      path: /var/cache/nginx
+      src: tmpfs
+      fstype: tmpfs
+      opts: "size={{ nginx_cache_size }}"
+      state: mounted
+
+- name: Copy Nginx configuration files
+  block:
+  - name: Create Nginx include directory
+    file:
+      name: "/etc/nginx/include"
+      state: directory
+  - name: Copy SSL options config
+    template:
+      src: "options-ssl-nginx.conf.j2"
+      dest: "/etc/nginx/include/options-ssl-nginx.conf"
+    notify:
+      - restart nginx
+  - name: Copy SSL security headers config
+    template:
+      src: "security_headers.conf.j2"
+      dest: "/etc/nginx/include/security_headers.conf"
+    notify:
+      - restart nginx
+  - name: Copy Nginx cache config
+    template:
+      src: "nginx_cache.conf.j2"
+      dest: "/etc/nginx/conf.d/nginx_cache.conf"
+    notify:
+      - restart nginx
+  - name: Copy virtual host config
+    template:
+      src: "vhost.conf.j2"
+      dest: "/etc/nginx/conf.d/{{ server_name.split()[0] }}.conf"
+    notify:
+      - restart nginx
+
+- name: Check NGINX configs
+  shell: "/usr/sbin/nginx -t"
+  register: nginx_config_status

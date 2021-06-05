@@ -1,0 +1,73 @@
+server_tokens off;
+
+
+
+upstream node-app {
+        least_conn;
+
+        server localhost:2121 weight=30;
+        #server 178.170.192.185:2022 weight=90;
+}
+
+server {
+#        root /var/www/html;
+        server_name {{ server_name }};
+
+        include include/security_headers.conf;
+
+        client_max_body_size 1M;
+
+#       location ~* \.(?:ico|css|js|gif|jpe?g|png|svg|pdf|woff2|map)$ {
+#               include include/security_headers.conf;
+#                proxy_cache gosa2021_cache;
+#                proxy_cache_valid 200 302 20s;
+#                proxy_cache_valid 404 1s;
+#                proxy_pass http://node-gosa2021;
+#               proxy_ignore_headers Cache-Control;
+#               proxy_cache_lock on;
+#               add_header X-Proxy-Cache $upstream_cache_status;
+#               add_header Cache-Control "public";
+#               expires 10m;
+#               access_log off;
+#       }
+
+        location / {
+                include include/security_headers.conf;
+                proxy_pass http://node-app;
+                proxy_cache nginx_cache;
+                proxy_cache_valid 200 302 1m;
+                proxy_cache_valid 404 1s;
+                proxy_ignore_headers Expires Cache-Control;
+                proxy_cache_lock on;
+                add_header X-Proxy-Cache $upstream_cache_status;
+                add_header Cache-Control "public";
+                expires 1m;
+
+
+        }
+
+        location /admin {
+                #allow 167.99.211.185;
+                #allow 194.146.113.0/24;
+                #deny all;
+
+                proxy_pass http://node-app;
+        }
+
+    listen 443 ssl;
+    ssl_certificate /etc/ssl/crt/localhost.crt;
+    ssl_certificate_key /etc/ssl/private/localhost.key;
+    include /etc/nginx/include/options-ssl-nginx.conf;
+    #ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+
+}
+
+
+server {
+    server_name {{ server_name }};
+
+    listen 80;
+    return 301 https://$host$request_uri;
+
+}

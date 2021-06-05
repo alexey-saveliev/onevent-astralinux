@@ -36,7 +36,7 @@
   tags:
     - deploy-app
 
-- name: Deploy NodeJS app config for server {{ server_name }}
+- name: Deploy NodeJS app config for server {{ server_name.split()[0] }}
   template:
     src: "config.json.j2"
     dest: "{{ app_path }}/config.json"

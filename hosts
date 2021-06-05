@@ -8,6 +8,8 @@ all:
     WebServers:
       hosts:
         localhost:
+      vars:
+        server_name: "10.100.1.153 localhost"
     dbservers:
       hosts:
         localhost:
