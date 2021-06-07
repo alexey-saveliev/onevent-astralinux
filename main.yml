@@ -12,3 +12,8 @@
   hosts: Converter
   roles:
     - nodejs
+
+- name: Deploy FlashPhoner server
+  hosts: FlashPhoner
+  roles:
+    - FlashPhoner

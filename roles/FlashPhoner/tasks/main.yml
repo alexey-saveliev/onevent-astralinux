@@ -1,0 +1,40 @@
+- name: Install pip{{ ansible_python.version.major}} module
+  apt:
+    name: "python{{ ansible_python.version.major}}-pip"
+    state: present
+- name: Install python pexpect module for use later while FlashPhoner installation
+  pip:
+    name: pexpect
+    state: present
+- name: Install curl needed to start WCS
+  apt:
+    name: curl
+    state: present
+- name: Install JDK
+  apt:
+    name: default-jdk
+    state: present
+
+- name: Remove previous sources
+  shell: "rm -rf /tmp/FlashphonerWebCallServer*"
+
+- name: Download latest build
+  shell: "wget https://flashphoner.com/download-wcs5-server.tar.gz -O- | tar -zx"
+  args:
+    chdir: /tmp
+
+- name: Get WCS install directory
+  shell: "ls /tmp | grep FlashphonerWebCallServer"
+  register: install_dir
+
+- name: Install Flashphoner WebCallServer
+  expect:
+    command: "./install.sh"
+    chdir: "/tmp/{{ install_dir.stdout }}"
+    responses:
+      '(.*)Press ENTER(.*)': "\n"
+      '(.*)Do you agree to the license terms(.*)': "yes"
+      'Is your server located in your LAN \[yes/no\] ?': "yes"
+      'Press any key to continue...': "\n"
+      '(.*)Do you want to start WebCallServer at server startup(.*)': "yes"
+      '(.*)Installation complete!(.*)': "\n"

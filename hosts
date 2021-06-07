@@ -13,3 +13,6 @@ all:
     dbservers:
       hosts:
         localhost:
+    FlashPhoner:
+      hosts:
+        localhost:
