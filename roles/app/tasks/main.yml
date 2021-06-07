@@ -1,3 +1,7 @@
+- name: Install Git used for clone application repository
+  apt:
+    name: "git"
+    state: present
 - name: Install ffmpeg repository keys
   apt:
     deb: http://www.deb-multimedia.org/pool/main/d/deb-multimedia-keyring/deb-multimedia-keyring_2016.8.1_all.deb
